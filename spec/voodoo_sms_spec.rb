@@ -57,6 +57,11 @@ describe VoodooSMS do
       it { expect(client.send_sms(orig, dest, msg)).to eq true }
     end
 
+    context '200 success - multipart message', vcr: :success do
+      let(:vcr_cassette) { 'send_multipart_sms' }
+      it { expect(client.send_sms(orig, dest, 'A'*320)).to eq true }
+    end
+
     context 'validation' do
       before(:each) { allow(VoodooSMS).to receive(:get).and_return({'result' => 200}) }
 
