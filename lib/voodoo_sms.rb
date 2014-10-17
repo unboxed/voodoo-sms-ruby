@@ -20,7 +20,7 @@ class VoodooSMS
   end
 
   def get_credit
-    make_request('getCredit')
+    make_request('getCredit')['credit']
   end
 
   private
@@ -32,7 +32,7 @@ class VoodooSMS
       end
 
       case response['result']
-      when 200
+      when 200, '200 OK'
         return response
       when 400
         raise Error::BadRequest.new(response.values.join(', '))

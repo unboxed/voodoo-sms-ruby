@@ -39,4 +39,11 @@ describe VoodooSMS do
       it { expect{client.get_credit}.to raise_error VoodooSMS::Error::Unexpected }
     end
   end
+
+  context '200 success', vcr: :success  do
+    describe :get_credit do
+      let(:vcr_cassette) { 'get_credit' }
+      it { expect(client.get_credit).to eq '123.0000' }
+    end
+  end
 end
