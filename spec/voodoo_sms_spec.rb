@@ -143,4 +143,7 @@ describe VoodooSMS do
       end
     end
   end
+
+  xdescribe :transfer_credit do
+  end
 end
