@@ -17,7 +17,7 @@ class VoodooSMS
   format :json
 
   def initialize(username, password)
-    @options = { query: { uid: username, pass: password } }
+    @params = { query: { uid: username, pass: password } }
   end
 
   def get_credit
@@ -25,20 +25,20 @@ class VoodooSMS
   end
 
   def send_sms(originator, destination, message)
-    merge_options(orig: originator, dest: destination, msg: message, validity: 1)
+    merge_params(orig: originator, dest: destination, msg: message, validity: 1)
     make_request('sendSMS')['resultText'].to_s.include? 'OK'
   end
 
   private
-    def merge_options(opts)
-      @options[:query].merge!(opts)
+    def merge_params(opts)
+      @params[:query].merge!(opts)
     end
 
     def make_request(method)
       validate_parameters_for(method)
 
       begin
-        response = self.class.get("/vapi/server/#{method}", @options)
+        response = self.class.get("/vapi/server/#{method}", @params)
       rescue => e
         raise Error::Unexpected.new(e.message)
       end
@@ -64,8 +64,8 @@ class VoodooSMS
     def validate_parameters_for(method)
       case method
       when 'sendSMS'
-        validate_originator  @options[:query][:orig]
-        validate_destination @options[:query][:dest]
+        validate_originator  @params[:query][:orig]
+        validate_destination @params[:query][:dest]
       end
     end
 
