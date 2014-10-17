@@ -40,10 +40,65 @@ describe VoodooSMS do
     end
   end
 
-  context '200 success', vcr: :success  do
-    describe :get_credit do
+  describe :get_credit do
+    context '200 success', vcr: :success  do
       let(:vcr_cassette) { 'get_credit' }
       it { expect(client.get_credit).to eq '123.0000' }
+    end
+  end
+
+  describe :send_sms do
+    let(:orig) {'SENDERID'}
+    let(:dest) {'447123456789'}
+    let(:msg) {'Test message'}
+
+    context '200 success', vcr: :success do
+      let(:vcr_cassette) { 'send_sms' }
+      it { expect(client.send_sms(orig, dest, msg)).to eq true }
+    end
+
+    context 'validation' do
+      before(:each) { allow(VoodooSMS).to receive(:get).and_return({'result' => 200}) }
+
+      context 'originator parameter' do
+        it 'allows a maximum of 15 numeric digits' do
+          expect{client.send_sms('0'*15, dest, msg)}.to_not raise_error
+        end
+
+        it 'allows a maximum of 11 alphanumerics' do
+          expect{client.send_sms("#{'0A'*5}0", dest, msg)}.to_not raise_error
+        end
+
+        it 'does not allow blank entry' do
+          expect{client.send_sms('', dest, msg)}.to raise_error VoodooSMS::Error::InvalidParameterFormat
+        end
+
+        it 'does not allow input longer than 15 numerics digits' do
+          expect{client.send_sms('0'*16, dest, msg)}.to raise_error VoodooSMS::Error::InvalidParameterFormat
+        end
+
+        it 'does not allow input longer than 11 alphanumerics' do
+          expect{client.send_sms('0A'*6, dest, msg)}.to raise_error VoodooSMS::Error::InvalidParameterFormat
+        end
+      end
+
+      context 'destination parameter' do
+        it 'allows a maximum of 10 numeric digits' do
+          expect{client.send_sms(orig, '0'*10, msg)}.to_not raise_error
+        end
+
+        it 'allows a maximum of 15 numeric digits' do
+          expect{client.send_sms(orig, '0'*15, msg)}.to_not raise_error
+        end
+
+        it 'does not allow blank entry' do
+          expect{client.send_sms(orig, '', msg)}.to raise_error VoodooSMS::Error::InvalidParameterFormat
+        end
+
+        it 'does not allow invalid E.164 formats' do
+          expect{client.send_sms(orig, 'ABC', msg)}.to raise_error VoodooSMS::Error::InvalidParameterFormat
+        end
+      end
     end
   end
 end

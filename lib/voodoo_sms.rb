@@ -8,6 +8,7 @@ class VoodooSMS
     class Forbidden < StandardError; end
     class MessageTooLarge < StandardError; end
     class Unexpected < StandardError; end
+    class InvalidParameterFormat < StandardError; end
   end
 
   include HTTParty
@@ -23,8 +24,19 @@ class VoodooSMS
     make_request('getCredit')['credit']
   end
 
+  def send_sms(originator, destination, message)
+    merge_options(orig: originator, dest: destination, msg: message, validity: 1)
+    make_request('sendSMS')['resultText'].to_s.include? 'OK'
+  end
+
   private
+    def merge_options(opts)
+      @options[:query].merge!(opts)
+    end
+
     def make_request(method)
+      validate_parameters_for(method)
+
       begin
         response = self.class.get("/vapi/server/#{method}", @options)
       rescue => e
@@ -46,6 +58,26 @@ class VoodooSMS
         raise Error::MessageTooLarge.new(response.values.join(', '))
       else
         raise Error::Unexpected.new(response.values.join(', '))
+      end
+    end
+
+    def validate_parameters_for(method)
+      case method
+      when 'sendSMS'
+        validate_originator  @options[:query][:orig]
+        validate_destination @options[:query][:dest]
+      end
+    end
+
+    def validate_originator(input)
+      unless input.match /^[a-zA-Z0-9]{1,11}(\d{4})?$/
+        raise Error::InvalidParameterFormat.new('must be 15 numeric digits or 11 alphanumerics')
+      end
+    end
+
+    def validate_destination(input)
+      unless input.match /^\d{10,15}$/
+        raise Error::InvalidParameterFormat.new('must be valid E.164 format')
       end
     end
 end
