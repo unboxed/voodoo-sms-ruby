@@ -29,6 +29,19 @@ class VoodooSMS
     make_request('sendSMS')['resultText'].to_s.include? 'OK'
   end
 
+  def get_sms(from, to, keyword = '')
+    merge_params(from: format_date(from), to: format_date(to), keyword: keyword)
+    response = make_request('getSMS')
+    # TODO: won't raise any VoodooSMS:Error
+    if response.is_a?(Array)
+      response.map { |r| OpenStruct.new(from: r['Originator'],
+        timestamp: DateTime.parse(r['TimeStamp']),
+        message: r['Message']) }
+    else
+      []
+    end
+  end
+
   private
     def merge_params(opts)
       @params[:query].merge!(opts)
@@ -43,8 +56,10 @@ class VoodooSMS
         raise Error::Unexpected.new(e.message)
       end
 
+      return response if method == 'getSMS' # inconsistencies :(
+
       case response['result']
-      when 200, '200 OK'
+      when 200, '200 OK' # inconsistencies :(
         return response
       when 400
         raise Error::BadRequest.new(response.values.join(', '))
@@ -79,5 +94,9 @@ class VoodooSMS
       unless input.match /^\d{10,15}$/
         raise Error::InvalidParameterFormat.new('must be valid E.164 format')
       end
+    end
+
+    def format_date(date)
+      date.respond_to?(:strftime) ? date.strftime("%F %T") : date
     end
 end
