@@ -10,6 +10,7 @@ class VoodooSMS
     class Forbidden < StandardError; end
     class MessageTooLarge < StandardError; end
     class Unexpected < StandardError; end
+    class RequiredParameter < StandardError; end
     class InvalidParameterFormat < StandardError; end
   end
 
@@ -86,12 +87,14 @@ class VoodooSMS
     end
 
     def validate_originator(input)
+      raise Error::RequiredParameter.new if input.nil? || input.empty?
       unless input.match /^[a-zA-Z0-9]{1,11}(\d{4})?$/
         raise Error::InvalidParameterFormat.new('must be 15 numeric digits or 11 alphanumerics')
       end
     end
 
     def validate_destination(input)
+      raise Error::RequiredParameter.new if input.nil? || input.empty?
       unless input.match /^\d{10,15}$/
         raise Error::InvalidParameterFormat.new('must be valid E.164 format')
       end

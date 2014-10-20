@@ -74,8 +74,12 @@ describe VoodooSMS do
           expect{client.send_sms("#{'0A'*5}0", dest, msg)}.to_not raise_error
         end
 
+        it 'does not allow nil entries' do
+          expect{client.send_sms(nil, dest, msg)}.to raise_error VoodooSMS::Error::RequiredParameter
+        end
+
         it 'does not allow blank entry' do
-          expect{client.send_sms('', dest, msg)}.to raise_error VoodooSMS::Error::InvalidParameterFormat
+          expect{client.send_sms('', dest, msg)}.to raise_error VoodooSMS::Error::RequiredParameter
         end
 
         it 'does not allow input longer than 15 numerics digits' do
@@ -96,8 +100,12 @@ describe VoodooSMS do
           expect{client.send_sms(orig, '0'*15, msg)}.to_not raise_error
         end
 
+        it 'does not allow nil entries' do
+          expect{client.send_sms(orig, nil, msg)}.to raise_error VoodooSMS::Error::RequiredParameter
+        end
+
         it 'does not allow blank entry' do
-          expect{client.send_sms(orig, '', msg)}.to raise_error VoodooSMS::Error::InvalidParameterFormat
+          expect{client.send_sms(orig, '', msg)}.to raise_error VoodooSMS::Error::RequiredParameter
         end
 
         it 'does not allow invalid E.164 formats' do
