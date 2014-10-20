@@ -1,5 +1,7 @@
 require 'httparty'
 
+# TODO: RDoc
+
 class VoodooSMS
   module Error
     class BadRequest < StandardError; end
@@ -31,8 +33,7 @@ class VoodooSMS
 
   def get_sms(from, to, keyword = '')
     merge_params(from: format_date(from), to: format_date(to), keyword: keyword)
-    response = make_request('getSMS')
-    # TODO: won't raise any VoodooSMS:Error
+    response = make_request('getSMS')['messages']
     if response.is_a?(Array)
       response.map { |r| OpenStruct.new(from: r['Originator'],
         timestamp: DateTime.parse(r['TimeStamp']),
@@ -56,11 +57,11 @@ class VoodooSMS
         raise Error::Unexpected.new(e.message)
       end
 
-      return response if method == 'getSMS' # inconsistencies :(
-
       case response['result']
       when 200, '200 OK' # inconsistencies :(
         return response
+      when 'You dont have any messages'
+        return {} # :(
       when 400
         raise Error::BadRequest.new(response.values.join(', '))
       when 401
