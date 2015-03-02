@@ -24,18 +24,20 @@ class VoodooSMS
   end
 
   def get_credit
-    make_request('getCredit')['credit']
+    response = make_request('getCredit')
+    fetch_from_response(response, 'credit')
   end
 
   def send_sms(originator, destination, message)
     merge_params(orig: originator, dest: destination, msg: message, validity: 1)
-    make_request('sendSMS')['resultText'].to_s.include? 'OK'
+    response = make_request('sendSMS').parsed_response
+    fetch_from_response(response, 'reference_id')
   end
 
   def get_sms(from, to, keyword = '')
     merge_params(from: format_date(from), to: format_date(to), keyword: keyword)
-    response = make_request('getSMS')['messages']
-    if response.is_a?(Array)
+    response = make_request('getSMS')['messages'] # unfortunately we can't use fetch_from_response here
+    if response.is_a?(Array)                      # response doesn't have messages key if no new messages
       response.map { |r| OpenStruct.new(from: r['Originator'],
         timestamp: DateTime.parse(r['TimeStamp']),
         message: r['Message']) }
@@ -102,5 +104,9 @@ class VoodooSMS
 
     def format_date(date)
       date.respond_to?(:strftime) ? date.strftime("%F %T") : date
+    end
+
+    def fetch_from_response(response, key)
+      response.fetch(key) { raise Error::Unexpected.new("No #{key} found from Voodoo response!") }
     end
 end

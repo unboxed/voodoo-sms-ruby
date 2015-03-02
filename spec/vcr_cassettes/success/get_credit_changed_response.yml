@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://voodoosms.com/vapi/server/sendSMS?dest=447123456789&format=json&msg=Test%20message&orig=SENDERID&pass=password&uid=username&validity=1
+    uri: http://voodoosms.com/vapi/server/getCredit?format=json&pass=password&uid=username
     body:
       encoding: US-ASCII
       string: ''
@@ -13,11 +13,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 17 Oct 2014 17:18:19 GMT
+      - Fri, 17 Oct 2014 15:21:40 GMT
       Server:
       - Apache
       Content-Length:
-      - '36'
+      - '38'
       X-Powered-By:
       - PleskLin
       Ms-Author-Via:
@@ -28,7 +28,7 @@ http_interactions:
       - application/json
     body:
       encoding: UTF-8
-      string: '{"result":200,"resultText":"200 OK","reference_id": "4103395"}'
+      string: '{"result":"200 OK","credit_remaining":"123.0000"}'
     http_version:
-  recorded_at: Fri, 17 Oct 2014 17:18:19 GMT
+  recorded_at: Fri, 17 Oct 2014 15:21:40 GMT
 recorded_with: VCR 2.9.3

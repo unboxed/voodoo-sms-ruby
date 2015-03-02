@@ -28,7 +28,7 @@ http_interactions:
       - application/json
     body:
       encoding: UTF-8
-      string: '{"result":200,"resultText":"200 OK"}'
+      string: '{"result":200,"resultText":"200 OK","reference_id": "4103395"}'
     http_version:
   recorded_at: Fri, 17 Oct 2014 18:42:09 GMT
 recorded_with: VCR 2.9.3
