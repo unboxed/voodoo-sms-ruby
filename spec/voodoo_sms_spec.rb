@@ -166,6 +166,17 @@ describe VoodooSMS do
     end
   end
 
+  describe :get_dlr_status do
+    context '200 success', vcr: :success  do
+      let(:vcr_cassette) { 'get_dlr_status' }
+      it { expect(client.get_dlr_status('5143598')).to eq 'Delivered' }
+    end
+    context 'Voodoo has changed response json, reference_id is renamed to message_id', vcr: :success do
+      let(:vcr_cassette) { 'get_dlr_status_response_changed' }
+      it { expect { client.get_dlr_status('5143598') }.to raise_error VoodooSMS::Error::Unexpected }
+    end
+  end
+
   xdescribe :transfer_credit do
   end
 end

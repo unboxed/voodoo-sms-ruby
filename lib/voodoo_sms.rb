@@ -46,6 +46,12 @@ class VoodooSMS
     end
   end
 
+  def get_dlr_status(reference_id)
+    merge_params(reference_id: reference_id)
+    response = make_request('getDlrStatus')
+    fetch_from_response(response, 'delivery_status')
+  end
+
   private
     def merge_params(opts)
       @params[:query].merge!(opts)
