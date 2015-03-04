@@ -175,6 +175,10 @@ describe VoodooSMS do
       let(:vcr_cassette) { 'get_delivery_status_response_changed' }
       it { expect { client.get_delivery_status('5143598') }.to raise_error VoodooSMS::Error::Unexpected }
     end
+    context 'Message is not delivered, Voodoo responds with empty status', vcr: :success do
+      let(:vcr_cassette) { 'get_delivery_status_response_empty' }
+      it { expect(client.get_delivery_status('5159497')).to be_nil }
+    end
   end
 
   xdescribe :transfer_credit do
