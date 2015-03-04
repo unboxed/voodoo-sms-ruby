@@ -1,0 +1,38 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://voodoosms.com/vapi/server/getDlrStatus?format=json&pass=password&reference_id=5159497&uid=username
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 04 Mar 2015 14:47:07 GMT
+      Server:
+      - Apache
+      Content-Length:
+      - '92'
+      X-Powered-By:
+      - PleskLin
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"result":"200 OK","reference_id":"5159497","delivery_status":null,"delivery_datetime":null}'
+    http_version: 
+  recorded_at: Wed, 04 Mar 2015 14:47:06 GMT
+recorded_with: VCR 2.9.3
