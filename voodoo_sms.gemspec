@@ -1,6 +1,6 @@
 Gem::Specification.new do |gem|
   gem.name        = 'voodoo_sms'
-  gem.version     = '0.0.2'
+  gem.version     = '1.0.0'
   gem.date        = '2014-10-17'
   gem.summary     = 'VoodooSMS API'
   gem.description = 'Ruby wrapper for VoodooSMS API'

@@ -45,6 +45,10 @@ describe VoodooSMS do
       let(:vcr_cassette) { 'get_credit' }
       it { expect(client.get_credit).to eq '123.0000' }
     end
+    context 'Voodoo has changed response json, credit is renamed to credit_remaining', vcr: :success  do
+      let(:vcr_cassette) { 'get_credit_changed_response' }
+      it { expect { expect(client.get_credit) }.to raise_error VoodooSMS::Error::Unexpected }
+    end
   end
 
   describe :send_sms do
@@ -54,16 +58,26 @@ describe VoodooSMS do
 
     context '200 success', vcr: :success do
       let(:vcr_cassette) { 'send_sms' }
-      it { expect(client.send_sms(orig, dest, msg)).to eq true }
+      it { expect(client.send_sms(orig, dest, msg)).to eq("4103395") }
     end
 
     context '200 success - multipart message', vcr: :success do
       let(:vcr_cassette) { 'send_multipart_sms' }
-      it { expect(client.send_sms(orig, dest, 'A'*320)).to eq true }
+      it { expect(client.send_sms(orig, dest, 'A'*320)).to eq("4103395") }
+    end
+
+    context 'Voodoo has changed response json, reference_id is renamed to message_id', vcr: :success do
+      let(:vcr_cassette) { 'send_sms_response_changed' }
+      it { expect { client.send_sms(orig, dest, msg) }.to raise_error VoodooSMS::Error::Unexpected }
     end
 
     context 'validation' do
-      before(:each) { allow(VoodooSMS).to receive(:get).and_return({'result' => 200}) }
+      before(:each) do
+        response = double("HTTParty::Response",
+          parsed_response: {"result" => 200, "resultText" => "200 OK", "reference_id" => "4103395"})
+        allow(response).to receive(:[]).with("result").and_return("200 OK")
+        allow(VoodooSMS).to receive(:get).and_return(response)
+      end
 
       context 'originator parameter' do
         it 'allows a maximum of 15 numeric digits' do
