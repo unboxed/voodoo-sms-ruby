@@ -15,7 +15,7 @@ class VoodooSMS
   end
 
   include HTTParty
-  base_uri 'voodoosms.com'
+  base_uri 'https://voodoosms.com'
   default_params format: 'json'
   format :json
 

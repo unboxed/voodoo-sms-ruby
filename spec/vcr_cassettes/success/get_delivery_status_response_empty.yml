@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://voodoosms.com/vapi/server/getDlrStatus?format=json&pass=password&reference_id=5159497&uid=username
+    uri: https://voodoosms.com/vapi/server/getDlrStatus?format=json&pass=password&reference_id=5159497&uid=username
     body:
       encoding: US-ASCII
       string: ''

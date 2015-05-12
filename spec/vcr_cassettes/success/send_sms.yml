@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://voodoosms.com/vapi/server/sendSMS?dest=447123456789&format=json&msg=Test%20message&orig=SENDERID&pass=password&uid=username&validity=1
+    uri: https://voodoosms.com/vapi/server/sendSMS?dest=447123456789&format=json&msg=Test%20message&orig=SENDERID&pass=PASSWORD&uid=USERNAME&validity=1
     body:
       encoding: US-ASCII
       string: ''

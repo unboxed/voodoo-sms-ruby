@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://voodoosms.com/vapi/server/getSMS?format=json&from=2014-10-10%2000:00:00&keyword=TEMP&pass=password&to=2014-10-17%2000:00:00&uid=username
+    uri: https://voodoosms.com/vapi/server/getSMS?format=json&from=2014-10-10%2000:00:00&keyword=TEMP&pass=password&to=2014-10-17%2000:00:00&uid=username
     body:
       encoding: US-ASCII
       string: ''

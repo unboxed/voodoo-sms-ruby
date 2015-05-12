@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://voodoosms.com/vapi/server/getCredit?format=json&pass=password&uid=username
+    uri: https://voodoosms.com/vapi/server/getCredit?format=json&pass=PASSWORD&uid=USERNAME
     body:
       encoding: US-ASCII
       string: ''
